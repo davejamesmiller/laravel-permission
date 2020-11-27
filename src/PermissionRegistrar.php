@@ -131,13 +131,15 @@ class PermissionRegistrar
             });
         }
 
-        $permissions = clone $this->permissions;
+        return $this->permissions->filter(static function ($permission) use ($params) {
+            foreach ($params as $attr => $value) {
+                if ($permission->getAttribute($attr) != $value) {
+                    return false;
+                }
+            }
 
-        foreach ($params as $attr => $value) {
-            $permissions = $permissions->where($attr, $value);
-        }
-
-        return $permissions;
+            return true;
+        });
     }
 
     /**
